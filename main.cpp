@@ -1,10 +1,11 @@
-#include <iostream>
-#include <windows.h>
+#include "convenience.hpp"
+
+#include <windows.h> // to enable virtual terminal processing
 #include <conio.h> // for getch()
-#include <thread>
+#include <vector>
 
 
-// TODO: Start figuring out snake movement, probably has to do something with arrays
+// TODO: How to check if the current OS is Windows, if yes, only then we call the init() function
 
 
 /*
@@ -14,34 +15,6 @@ Use these for virtual terminal sequences:
 */
 
 
-// Convenience ------------------------
-typedef unsigned int uint;
-
-
-enum direction { //TODO: implement this
-    LEFT, RIGHT, UP, DOWN
-};
-
-
-void draw(std::string draw_this_string, uint x, uint y) {
-    std::cout << "\x1b[" << y << ";" << x << "H"; // set the cursor position
-
-    std::cout << draw_this_string;
-}
-
-
-void erase(uint x, uint y) {
-    std::cout << "\x1b[" << y << ";" << x << "H"; // set the cursor position
-
-    std::cout << "\x1b[1X"; // erase 1 character at the cursor position and replace it with space
-}
-
-
-inline void delay(uint milliseconds) {
-    std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
-}
-
-// Convenience ends ----------------------- inconvenience starts
 
 
 // Required to enable virtual terminal processing on windows platforms
@@ -72,8 +45,15 @@ void init() {
 
 
 
+std::vector <Position> snake_position_array = {
+    {10, 10}, {10, 11}, {10, 12}, {10, 13}
+};
+
+
+
+
 bool game_is_running = true;
-int current_direction = UP; // initial direction
+int current_direction = RIGHT; // initial direction
 
 
 void input_loop() {
@@ -108,32 +88,61 @@ void game_loop() {
     while(game_is_running) {
         switch(current_direction) {
             case UP:
-            erase(x, y);
-            y--;
-            draw("O", x, y);
+                for (Position each : snake_position_array) erase(each.x, each.y); // erase previous snake
+
+                snake_position_array.back().x = snake_position_array.front().x;
+                snake_position_array.back().y = snake_position_array.front().y - 1;
+
+                // move "back" to "front"
+                snake_position_array.emplace(snake_position_array.begin(), snake_position_array.back());
+                snake_position_array.pop_back();
+
+                for (Position each : snake_position_array) draw("O", each.x, each.y); // draw snake
             break;
             
             case DOWN:
-            erase(x, y);
-            y++;
-            draw("O", x, y);
+                for (Position each : snake_position_array) erase(each.x, each.y);
+
+                snake_position_array.back().x = snake_position_array.front().x;
+                snake_position_array.back().y = snake_position_array.front().y + 1;
+
+                // move "back" to "front"
+                snake_position_array.emplace(snake_position_array.begin(), snake_position_array.back());
+                snake_position_array.pop_back();
+
+                for (Position each : snake_position_array) draw("O", each.x, each.y);
             break;
 
             case LEFT:
-            erase(x, y);
-            x--;
-            draw("O", x, y);
+                for (Position each : snake_position_array) erase(each.x, each.y);
+
+                snake_position_array.back().x = snake_position_array.front().x - 1;
+                snake_position_array.back().y = snake_position_array.front().y;
+
+                // move "back" to "front"
+                snake_position_array.emplace(snake_position_array.begin(), snake_position_array.back());
+                snake_position_array.pop_back();
+
+                for (Position each : snake_position_array) draw("O", each.x, each.y);
             break;
 
             case RIGHT:
-            erase(x, y);
-            x++;
-            draw("O", x, y);
+                for (Position each : snake_position_array) erase(each.x, each.y);
+
+                snake_position_array.back().x = snake_position_array.front().x + 1;
+                snake_position_array.back().y = snake_position_array.front().y;
+
+                // move "back" to "front"
+                snake_position_array.emplace(snake_position_array.begin(), snake_position_array.back());
+                snake_position_array.pop_back();
+
+                for (Position each : snake_position_array) draw("O", each.x, each.y);
             break;
 
         }
         delay(250);
     }
+
 }
 
 
@@ -142,6 +151,11 @@ void game_loop() {
 int main() {
     init();
 
+    std::cout << "Press and key to start.";
+
+    getch();
+    clear_screen();
+    
     std::thread input_thread (input_loop);
     std::thread game_thread (game_loop);
 
