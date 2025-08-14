@@ -82,8 +82,6 @@ void input_loop() {
 
 
 void game_loop() {
-    int x = 10, y = 10;
-    draw("O", x, y);
     
     while(game_is_running) {
         switch(current_direction) {
@@ -97,9 +95,9 @@ void game_loop() {
                 snake_position_array.emplace(snake_position_array.begin(), snake_position_array.back());
                 snake_position_array.pop_back();
 
-                for (Position each : snake_position_array) draw("O", each.x, each.y); // draw snake
+                for (Position each : snake_position_array) draw(each.x, each.y, GREEN); // draw snake
             break;
-            
+
             case DOWN:
                 for (Position each : snake_position_array) erase(each.x, each.y);
 
@@ -110,7 +108,7 @@ void game_loop() {
                 snake_position_array.emplace(snake_position_array.begin(), snake_position_array.back());
                 snake_position_array.pop_back();
 
-                for (Position each : snake_position_array) draw("O", each.x, each.y);
+                for (Position each : snake_position_array) draw(each.x, each.y, GREEN);
             break;
 
             case LEFT:
@@ -123,7 +121,7 @@ void game_loop() {
                 snake_position_array.emplace(snake_position_array.begin(), snake_position_array.back());
                 snake_position_array.pop_back();
 
-                for (Position each : snake_position_array) draw("O", each.x, each.y);
+                for (Position each : snake_position_array) draw(each.x, each.y, GREEN);
             break;
 
             case RIGHT:
@@ -136,7 +134,7 @@ void game_loop() {
                 snake_position_array.emplace(snake_position_array.begin(), snake_position_array.back());
                 snake_position_array.pop_back();
 
-                for (Position each : snake_position_array) draw("O", each.x, each.y);
+                for (Position each : snake_position_array) draw(each.x, each.y, GREEN);
             break;
 
         }
