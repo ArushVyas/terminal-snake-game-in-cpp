@@ -44,7 +44,6 @@ void draw(uint x, uint y, int color) {
     std::cout << "\x1b[0m"; // reset color
 }
 
-
 void erase(uint x, uint y) {
     std::cout << "\x1b[" << y << ";" << x * 2 << "H"; // set the cursor position
     //                                      ^ because: line_height = 2 * line_width
@@ -55,6 +54,8 @@ void erase(uint x, uint y) {
     std::cout << "\x1b[1X";
 
 }
+
+
 
 
 inline void delay(uint milliseconds) {

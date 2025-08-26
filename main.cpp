@@ -1,4 +1,5 @@
 #include "convenience.hpp"
+#include "apple_spawning.hpp"
 
 #include <windows.h> // to enable virtual terminal processing
 #include <conio.h> // for getch()
@@ -50,8 +51,6 @@ std::vector <Position> snake_position_array = {
 };
 
 
-
-
 bool game_is_running = true;
 int current_direction = RIGHT; // initial direction
 
@@ -81,9 +80,27 @@ void input_loop() {
 }
 
 
+
 void game_loop() {
+
+    std::vector<float> apple_spawn_x = random(311, 113, 50); // array of random x coordinates
+    std::vector<float> apple_spawn_y = random(457, 147, 50); // array of random y coordinates
+
+
+    int i = 0;
+    draw(apple_spawn_x[0], apple_spawn_y[0], RED);
     
     while(game_is_running) {
+        
+        // if snake head eats apple then run this code ---- but how do I check if snake eats apple?
+            erase(apple_spawn_x[i], apple_spawn_y[i]);
+            i++;
+            draw(apple_spawn_x[i], apple_spawn_y[i], RED);
+        
+        //TODO: extending the snake by 1 after eating apple
+        // ----
+
+
         switch(current_direction) {
             case UP:
                 for (Position each : snake_position_array) erase(each.x, each.y); // erase previous snake
@@ -100,20 +117,20 @@ void game_loop() {
 
             case DOWN:
                 for (Position each : snake_position_array) erase(each.x, each.y);
-
+                
                 snake_position_array.back().x = snake_position_array.front().x;
                 snake_position_array.back().y = snake_position_array.front().y + 1;
-
+                
                 // move "back" to "front"
                 snake_position_array.emplace(snake_position_array.begin(), snake_position_array.back());
                 snake_position_array.pop_back();
-
+                
                 for (Position each : snake_position_array) draw(each.x, each.y, GREEN);
             break;
-
+            
             case LEFT:
                 for (Position each : snake_position_array) erase(each.x, each.y);
-
+            
                 snake_position_array.back().x = snake_position_array.front().x - 1;
                 snake_position_array.back().y = snake_position_array.front().y;
 
@@ -123,31 +140,33 @@ void game_loop() {
 
                 for (Position each : snake_position_array) draw(each.x, each.y, GREEN);
             break;
-
+                
             case RIGHT:
                 for (Position each : snake_position_array) erase(each.x, each.y);
-
+                
                 snake_position_array.back().x = snake_position_array.front().x + 1;
                 snake_position_array.back().y = snake_position_array.front().y;
-
+                
                 // move "back" to "front"
                 snake_position_array.emplace(snake_position_array.begin(), snake_position_array.back());
                 snake_position_array.pop_back();
-
+                
                 for (Position each : snake_position_array) draw(each.x, each.y, GREEN);
             break;
 
-        }
+        } // switch statement
+
         delay(250);
-    }
+
+    } // while loop
 
 }
 
-
-
-
-int main() {
-    init();
+    
+    
+    
+    int main() {
+        init();
 
     std::cout << "Press and key to start.";
 
