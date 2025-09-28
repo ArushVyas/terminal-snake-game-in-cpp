@@ -15,6 +15,11 @@ class Position {
         x = x_coord;
         y = y_coord;
     }
+
+    bool operator==(Position second) {
+        if (x == second.x && y == second.y) return true;
+        else return false;
+    }
 };
 
 
@@ -49,10 +54,14 @@ void erase(uint x, uint y) {
     //                                      ^ because: line_height = 2 * line_width
 
     // erase 2 characters at the cursor position and replace them with space
-    std::cout << "\x1b[1X";
-    std::cout << "\x1b[1C"; // move cursor to the right by 1
-    std::cout << "\x1b[1X";
+    std::cout << "\x1b[2X";
+}
 
+
+
+void display_score(int score) {
+    std::cout << "\x1b[?25l"; // hide cursor
+    std::cout << "\x1b[20;1HScore: " << score; // set the cursor position and draw score
 }
 
 
